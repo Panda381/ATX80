@@ -1,0 +1,1004 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=utf-8">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>ATX80, ZX-80 computer clone with ATmega8 processor</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<div align="center"><center>
+
+<table border="0" width="100%">
+    <tr>
+        <td width="33%"><p align="left"><a href="../index.html"><font
+        face="Arial">&lt;&lt; Back</font></a></p>
+        </td>
+        <td width="33%">&nbsp;</td>
+        <td width="34%"><p align="right"><a href="index.html"><font
+        face="Arial">Cesky: <img src="img/cz.gif" border="0"
+        width="50" height="30"></font></a><font face="Arial">, <u>English:</u>
+        <img src="img/en2.gif" width="50" height="30"></font></p>
+        </td>
+    </tr>
+</table>
+</center></div>
+
+<p align="center"><font color="#FF8000" size="7" face="Arial"><strong>ATX-80</strong></font></p>
+
+<p align="center"><font color="#000000" size="4" face="Arial"><strong>ZX-80
+computer clone with ATmega8 processor</strong></font></p>
+
+<p align="center"><font face="Arial">Last update: 12/15/2021</font></p>
+
+<p align="center"><font face="Arial">ATX-80 on GitHub: </font><a
+href="https://github.com/Panda381/ATX80"><font face="Arial">https://github.com/Panda381/ATX80</font></a></p>
+
+<p align="center"><a href="img/atx80_1.jpg"><img
+src="img/atx80_1_m.jpg" border="0" width="400" height="312"></a></p>
+
+<p><font face="Arial">The ATX-80 is a microcomputer derived from
+the ZX-80, with an ATmega8 processor. It does not emulate code,
+but replaces the original computer with custom code with similar
+functionality in AVR assembly. It allows output of the video to a
+VGA monitor or to a PAL/NTSC television. BASIC programs can be
+stored in internal EEPROM, internal Flash or external EEPROM
+memory (32 memory slots) and also transferred between PC and
+memory. The advantages are easy construction and small size. It
+can be used as a small inexpensive computer for teaching basic
+BASIC programming. Includes 32 sample programs.</font></p>
+
+<p><font face="Arial"><strong>Contents</strong></font></p>
+
+<ul>
+    <li><a href="#description"><font face="Arial">Description</font></a></li>
+    <li><a href="#errata"><font face="Arial">ZX-80 BIOS errors</font></a></li>
+    <li><a href="#diagram"><font face="Arial">Wiring diagram</font></a></li>
+    <li><a href="#construction"><font face="Arial">Construction</font></a></li>
+    <li><a href="#programming"><font face="Arial">Programming and
+        starting up</font></a></li>
+    <li><a href="#eeprom"><font face="Arial">Programming EEPROM
+        with sample programs</font></a></li>
+    <li><a href="#basic"><font face="Arial">Description of the
+        ATX-80 BASIC</font></a></li>
+    <li><a href="#samples"><font face="Arial">Sample programs</font></a></li>
+    <li><a href="#download"><font face="Arial">Download</font></a></li>
+    <li><a href="#partlist"><font face="Arial">Parts list</font></a></li>
+</ul>
+
+<p align="center"><a href="img/atx80_8.jpg"><font face="Arial"><img
+src="img/atx80_8_m.jpg" border="0" width="400" height="274"></font></a></p>
+
+<h2><a name="description"></a><font face="Arial">Description</font></h2>
+
+<p><font face="Arial">The original intent of the project was to
+create a computer with similar features and technical limitations
+as the original ZX-80. That is, a fully functional BASIC
+interpreter with only 1 KB of RAM and as close to 4 KB of ROM as
+possible. The project was also conceived as a study of the
+original ZX-80 BIOS ROM. It must be admitted that the original
+ZX-80 BIOS was an admirable creation. In addition to being very
+innovative, it was created with a high optimization of code size,
+and although this required a considerable amount of clarity in
+the flow of data between functions, the author maintained an
+overview of the code with minimal errors. I have tried to keep
+the functionality of the original code as accurate as possible
+and commented my code in detail, which can be a useful addition
+to explain the BIOS functionality. The ZX-80 BIOS is a very
+useful and informative study material and, despite its age,
+deserves more attention as an admirable work.</font></p>
+
+<p><font face="Arial">The ATmega8 processor was chosen to rewrite
+the code, which has 1 KB of RAM (the same limitation as the
+ZX-80) and 8 KB of Flash memory. Although the Flash memory is
+more than the original 4 KB, the code was about 40% longer after
+rewriting (AVR instructions are 16-bit) and additional functions
+were added, such as a more complex video generator, memory
+handling, 1 KB of internal Flash was used as a memory slot to
+store programs, so the 8 KB of memory was used efficiently.</font></p>
+
+<p><font face="Arial">The ATX-80 includes a keyboard of 40 micro
+switches. It can generate video for VGA monitor and also video in
+PAL and NTSC television standard via Cinch connector. It is
+powered by an external +5V source via USB connector (USB charger
+or computer connector). An external 32 KB EEPROM memory is used
+to store user BASIC programs, allowing 32 programs to be stored
+in 32 memory slots. In addition to the external EEPROM memory,
+one internal memory slot in the processor's Flash memory can be
+used to copy programs between different external EEPROM memories.
+The edited program is also automatically mirrored in the internal
+EEPROM memory. The internal EEPROM has a size of only 512 bytes,
+so some programs do not fit in it completely, but most programs
+are no larger than 512 bytes (RAM must be shared with variables
+and video memory) and for longer programs at least a larger part
+is backed up.</font></p>
+
+<p><font face="Arial">Advantages of the ATX-80 over the original
+ZX-80:</font></p>
+
+<ul>
+    <li><font face="Arial">VGA video output</font></li>
+    <li><font face="Arial">Image is generated while the program
+        is running (FAST and SLOW modes can be used)</font></li>
+    <li><font face="Arial">Preservation of the edited program
+        even after shutdown</font></li>
+    <li><font face="Arial">Saving programs to external EEPROM</font></li>
+    <li><font face="Arial">Autorepeat keys</font></li>
+    <li><font face="Arial">Function with memory information</font></li>
+    <li><font face="Arial">Higher program running speed</font></li>
+    <li><font face="Arial">Small size</font></li>
+</ul>
+
+<p><font face="Arial">Limitations of the ATX-80 compared to the
+original ZX-80:</font></p>
+
+<ul>
+    <li><font face="Arial">Cannot run programs in machine code
+        (USR function is not functional)</font></li>
+    <li><font face="Arial">Memory cannot be increased by external
+        memory</font></li>
+    <li><font face="Arial">Cannot connect additional devices via
+        external bus</font></li>
+    <li><font face="Arial">The tape recorder cannot be used to
+        store programs, only its own EEPROM memory can be used</font></li>
+    <li><font face="Arial">Generated image characters contain an
+        extra 9th white bar (consequence of image generation by
+        SPI port)</font></li>
+</ul>
+
+<p align="center"><a href="img/atx80_2.jpg"><font face="Arial"><img
+src="img/atx80_2_m.jpg" border="0" width="400" height="287"></font></a></p>
+
+<h2><a name="errata"></a><font face="Arial">ZX-80 BIOS errors</font></h2>
+
+<p><font face="Arial">While studying the ZX-80 BIOS I came across
+a few minor bugs.</font></p>
+
+<p><font face="Arial">1) REM command error. The address of the
+REM routine should be L0849 instead of L084A. The error causes
+that giving the REM command without parameters (no text) will not
+execute the next line.</font></p>
+
+<p><font face="Arial">2) Error in the ED-EDIT routine - the
+following instructions should be in reverse order. The error can
+cause the computer to crash when writing a command when memory is
+full.</font></p>
+
+<pre><font size="4">	JR NC,L03A7	; back to ED-COPY if not enough
+			; room to fill edit line.
+	POP HL		; restore program position.</font></pre>
+
+<p><font face="Arial">3) The following error, although not
+apparent, is a potential risk when changing the compilation. At
+the beginning of the L03CB ED-EDIT routine, the initialization of
+register B to a value representing the number of lines to print
+is missing (a number of 2 or higher is needed). At this point,
+register B contains a value of 3 (derived from address L03CB),
+which is suitable, but recompiling from a different address could
+cause the bottom screen to stop printing. However, it is possible
+that the author deliberately omitted this instruction there, as
+part of the optimization.</font></p>
+
+<h2><a name="diagram"></a><font face="Arial">Wiring diagram</font></h2>
+
+<p><font face="Arial">The main processor is ATmega8. If
+necessary, it can be replaced by ATmega88, ATmega168 or ATmega328
+processors, which are pin compatible. A different firmware code
+must be used, which is also provided in the download package.
+However, the larger memory of the higher processor types is not
+used.</font></p>
+
+<p><font face="Arial">The processor is driven by a 24 MHz
+crystal. This frequency is necessary to display the required
+resolution on a VGA monitor. Although the frequency of the
+crystal used lies above the limits declared by the manufacturer,
+in practice it has been found that practically all processors can
+handle such overclocking fine. Still, it is advisable to use a
+socket for the processor and try another piece of the processor
+in case of difficulties. Insufficient supply voltage may also be
+the cause of malfunction. The cutoff frequency of the processor
+is dependent on the power supply, a low supply voltage may cause
+the processor to not work properly with the crystal used.</font></p>
+
+<p><font face="Arial">The keyboard is wired in a 5x8 key matrix,
+with similar wiring to the original ZX-80, just with reverse
+current flow. When scanning the keyboard, signals COL1 to COL5
+are wired as input (i.e., high impedance state) and only one of
+the COL signals is set as output with the LOW level. Signals ROW1
+to ROW8 are connected as input with an internal pull-up resistor.
+When the keypad is scanned, one of the COL signals is activated
+to LOW level and the reading of the ROW signals detects the key
+pressed.</font></p>
+
+<p><font face="Arial">The MOSI output from the SPI generator is
+routed as a video signal to both the VGA connector and the CINCH
+connector for output to the TV. The output is assumed to be
+loaded with a 75 ohm input resistor, which will provide the
+required voltage level of 0.7V. The SYNC signal is the output
+from Timer1, which provides horizontal synchronization. Timer1
+simultaneously triggers an interrupt to the video generator,
+which sends the video data through the SPI controller.</font></p>
+
+<p><font face="Arial">The VSYNC signal is only used in &quot;old
+VGA display&quot; mode. Otherwise, a CSYNC sync mix is normally
+generated at the SYNC output. The vertical signal is created in
+the sync mix by negating the horizontal sync signal. Most current
+VGA monitors support sync mix and work well in this mode. Only
+older VGA monitors require the use of a VSYNC signal as well. For
+most monitors, no difference between old/new VGA monitor modes
+should normally be observed.</font></p>
+
+<p><font face="Arial">The external EEPROM memory is connected via
+the TWI/I2C signals (SDA and SCL). A 32 KB 24LC256P memory is
+recommended as the most suitable type, which can hold 32 user
+programs (32 slots, where each slot is 1 KB in size). In addition
+to this, 24LC32 (4KB, i.e. 4 slots), 24LC64 (8 KB, i.e. 8 slots),
+24LC128 (16 KB, i.e. 16 slots) and 24LC512 (64 KB, i.e. 64 slots)
+can also be used. The memories differ only in the number of
+available memory slots.</font></p>
+
+<p><font face="Arial">It is advisable to use a socket for the
+EEPROM memory so that it can be replaced with another one with
+different stored programs if necessary. Programs can be copied
+between memories using both the slot in the internal Flash memory
+and the included copy utility.</font></p>
+
+<p><font face="Arial">The EEPROM memories used contain a
+write-protect input pin. The ATX-80 does not provide for this,
+but a configuration jumper can be added to the board to enable or
+disable writing to the EEPROM memory and thus protect its
+contents against unwanted overwriting.</font></p>
+
+<p><font face="Arial"><em><strong>Note:</strong></em><em> The
+ATX-80 does not recognize the size of the attached EEPROM memory.
+It is up to the user to use the correct slot number. If you use a
+slot number outside the memory range, the slot number will be
+overwritten by modulo operations to another slot (EEPROM ignores
+unused higher address bits) and may inadvertently overwrite
+another stored program. For example, writing to slot 34 in a 32
+KB memory will write to slot 2.</em></font></p>
+
+<p><font face="Arial"><em><strong>Note 2:</strong></em><em> It is
+assumed that the same hardware will be used for the planned ZX-81
+clone, but a different processor with larger memory (probably
+ATmega328) will be used. Therefore, use a socket for the
+processor to make it easily replaceable.</em></font></p>
+
+<p><a href="img/ATX80_diagram.png"><font face="Arial"><img
+src="img/ATX80_diagram_m.jpg" border="0" width="1024"
+height="478"></font></a></p>
+
+<h2><a name="construction"></a><font face="Arial">Construction</font></h2>
+
+<p><font face="Arial">The ATX-80 is designed for a 100x75 mm
+single-sided PCB - partly because of the limitations of the
+freeware version of the Eagle editor, and partly because this is
+one of the dimensions of commonly sold photo-etch PCBs. I produce
+the PCB by printing the master in an inkjet printer on
+transparent film (gluing 2 printed master with adhesive for
+better coverage), illuminating with UV-LED field (10 minutes from
+a distance of 30 cm), exposing in potassium hydroxide and etching
+in ferric chloride.</font></p>
+
+<p><font face="Arial">Please note that in case of customised PCB
+production, it is necessary to check the definitions of the hole
+diameters in the template (I drilled the holes myself and
+therefore not verified).</font></p>
+
+<p><a href="img/atx80_3.jpg"><font face="Arial"><img
+src="img/atx80_3_m.jpg" border="0" width="400" height="275"></font></a></p>
+
+<p><font face="Arial">Bottom side of the PCB</font></p>
+
+<p><a href="img/ATX80_bottom.png"><font face="Arial"><img
+src="img/ATX80_bottom_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Top side of PCB, can be replaced by wire
+jumpers</font></p>
+
+<p><a href="img/ATX80_top.png"><font face="Arial"><img
+src="img/ATX80_top_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Printing</font></p>
+
+<p><a href="img/ATX80_print.png"><font face="Arial"><img
+src="img/ATX80_print_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Assembly of components. Use a socket for
+the processor and EEPROM.</font></p>
+
+<p><a href="img/ATX80_mounte.png"><font face="Arial"><img
+src="img/ATX80_mounte_m.jpg" border="0" width="640" height="515"></font></a></p>
+
+<p><font face="Arial">Mounted board</font></p>
+
+<p><a href="img/atx80_4.jpg"><font face="Arial"><img
+src="img/atx80_4_m.jpg" border="0" width="400" height="323"></font></a></p>
+
+<p><a href="img/atx80_5.jpg"><font face="Arial"><img
+src="img/atx80_5_m.jpg" border="0" width="400" height="290"></font></a></p>
+
+<p><font face="Arial">A sticker with button labels is folded over
+the buttons. I printed it on regular paper on an inkjet printer,
+covered both sides with adhesive and then punched holes for the
+buttons with a 4 mm cut-out.</font></p>
+
+<p><a href="img/ATX80_label.png"><font face="Arial"><img
+src="img/ATX80_label_m.jpg" border="0" width="400" height="174"></font></a></p>
+
+<p><font face="Arial">The whole assembly</font></p>
+
+<p><a href="img/atx80_1.jpg"><img src="img/atx80_1_m.jpg"
+border="0" width="400" height="312"></a></p>
+
+<h2><a name="programming"></a><font face="Arial">Programming and
+starting up</font></h2>
+
+<p><font face="Arial">Set the fuses as follows:</font></p>
+
+<p><font face="Arial">ATmega8: low 0xEF (default 0xE1), high 0xC7
+(default 0xD9)<br>
+ATmega88: low 0xF7 (default 0x62), high 0xD7 (default 0xDF), ext
+0xFF (default 0xF9)<br>
+ATmega168: low 0xF7 (default 0x62), high 0xD7 (default 0xDF), ext
+0xFF (default 0xF9)<br>
+ATmega328: low 0xF7 (default 0x62), high 0xD7 (default 0xD9), ext
+0xFF (default 0xFF)</font></p>
+
+<p><font face="Arial">The fuses are set to map the boot loader to
+the smallest memory size (needed for writing to the internal
+flash memory), protect the internal EEPROM during programming,
+and fast external crystal.</font></p>
+
+<p><font face="Arial">If you connect a VGA monitor after
+programming the processor, you should see a basic white screen
+with a &quot;K&quot; cursor in the lower left corner. If this
+does not happen, a video mode other than the default VGA may be
+selected. To switch the video mode, hold down any of the buttons <strong>1</strong>
+through <strong>4</strong> on the keyboard while turning on the
+power:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>1 + power supply:</strong> old
+        VGA monitor (uses VSYNC signal)</font></li>
+    <li><font face="Arial"><strong>2 + power supply:</strong> new
+        VGA monitor (uses CSYNC sync mix)</font></li>
+    <li><font face="Arial"><strong>3 + power supply:</strong>
+        NTSC TV video mode (output via CINCH connector)</font></li>
+    <li><font face="Arial"><strong>4 + power supply:</strong> PAL
+        TV video mode (output via CINCH connector)</font></li>
+</ul>
+
+<p><font face="Arial">The selected configuration is stored in the
+last byte of the EEPROM memory for future use. If the video mode
+cannot be switched, you may have a short circuit on one of the
+buttons.</font></p>
+
+<p><font face="Arial">Be careful not to use the above operation
+to set the vieomode on a processor with a copy utility. It could
+inadvertently activate the programming of the external EEPROM.</font></p>
+
+<p><font face="Arial">You can check whether the processor is
+working without connecting the display. Insert the LED into the
+VGA connector between pins 14 (anode, long plus pin) and 10
+(cathode, shorter minus pin). If you turn on video mode 1 (the
+old VGA monitor), the LED will light up (VSYNC signal is active),
+the LED will not light up for other video modes. Or you can plug
+the LED into the CINCH connector (anode to the pinhole, cathode
+to the shell) - if an image is being generated, the LED will
+light.</font></p>
+
+<h2><a name="eeprom"></a><font face="Arial">Programming EEPROM
+with sample programs</font></h2>
+
+<p><font face="Arial"><strong>Uploading programs to EEPROM</strong></font></p>
+
+<p><font face="Arial">After testing the basic functionality of
+the ATX-80, I recommend programming the connected external EEPROM
+memory. In the attachment you will find a set of utilities to
+load a set of 32 sample programs into the EEPROM. This requires
+either reprogramming the main processor or using another
+processor as a &quot;copier&quot;.</font></p>
+
+<p><font face="Arial">In the utilities package there is a folder <strong>ATX80_Import</strong>,
+where you can find firmware (BIN files) for the copy processor,
+prepared for ATmega8/88/168/328 processors (the first number in
+the BIN file name indicates the processor). There are 3 sets of
+programs for each type of processor: slot 1 to 12, slot 13 to 24
+and slot 25 to 32. The contents of the programs can be found in
+the utility package in the files Programs_1.txt, Programs_2.txt
+and Programs_3.txt. Alternatively, the program descriptions can
+be found in the Programs.txt file in the ATX-80 source code
+package.</font></p>
+
+<p><font face="Arial">The copy program does not use a display,
+but only an indicator LED to save memory. Insert it into the VGA
+connector on the VSYNC signal, between pins 14 (anode, long plus
+pin) and 10 (cathode, shorter minus pin).</font></p>
+
+<p><a href="img/atx80_6.jpg"><font face="Arial"><img
+src="img/atx80_6_m.jpg" border="0" width="400" height="198"></font></a></p>
+
+<p><font face="Arial"><img src="img/atx80_7_m.jpg" width="250"
+height="124"></font></p>
+
+<p><font face="Arial">Load the *_1.bin program with the first set
+of sample programs into the processor. The LED will flash rapidly
+to indicate that the processor is in a standby state. If you now
+press button <strong>4</strong> on the keypad, the LED will light
+steadily for a few seconds to indicate that EEPROM programming is
+in progress. It will then flash again quickly to indicate that
+the operation has been completed. Load the other 2 sets of sample
+programs in this manner one at a time. The button must be pressed
+for at least half a second to be registered - the LED must light
+up for at least 1 second.</font></p>
+
+<p><font face="Arial"><strong>Copying programs between EEPROMs</strong></font></p>
+
+<p><font face="Arial">The program set in the utility package is
+also used to download or copy programs from the external EEPROM
+memory. Use the following procedure to copy the contents of the
+EEPROM to another memory.</font></p>
+
+<p><font face="Arial">Load the program from the <strong>ATX80_Copy</strong>
+folder for the corresponding processor into the processor. The
+LED will flash to indicate readiness. Press any of the buttons 1
+through 3. The LED will light momentarily to indicate an
+operation in progress, and the programs from the EEPROM will be
+downloaded to the processor's internal Flash memory. The button
+determines which slots are downloaded. Button <strong>1</strong>
+downloads slots 1 through 11, button <strong>2 </strong>downloads
+slots 12 through 22, and button <strong>3</strong> downloads
+slots 23 through 32. Theoretically, the ATmega8 may not fit 11
+slots - they would mean 11 KB of memory, but the ATmega8 has only
+8 KB. In practice, most programs are smaller so they can fit into
+8 KB. If sometimes they don't, you would need to use a processor
+with more memory or adjust the slot counts in the copy program
+source code.</font></p>
+
+<p><font face="Arial">After downloading the programs to the
+processor, turn off the power, replace the EEPROM memory, and
+turn on the power. Press button <strong>4 </strong>to save the
+loaded programs from Flash memory to the new external EEPROM
+memory. All programs that are in memory are saved and stored in
+the same slots from which they were downloaded.</font></p>
+
+<p><font face="Arial"><strong>Download programs from EEPROM</strong></font></p>
+
+<p><font face="Arial">You can also download programs to your PC
+using utilities. First, as in the previous case, download the
+appropriate set of programs to the processor's Flash memory
+(using buttons 1 to 3). Connect the CPU programmer and download
+the CPU Flash memory to the ATX80_Copy folder, to files named
+1.bin to 3.bin. In the <strong>ATX80_Export</strong> folder, run
+the command file !.bat. This will export the programs from the
+downloaded Flash memory images to the text files Programs_1.txt
+through Programs_3.txt in the base utilities folder. Within the
+files, you can edit the downloaded files in text form. Each
+program code is prefixed with a &quot;SLOT x&quot; to indicate
+which slot the program belongs to. The label indicates the start
+of the program for further processing. All subsequent lines
+starting with a number are processed as program lines. Program
+lines may be followed by LET or DIM statements containing the
+filling of numeric or text variables.</font></p>
+
+<p><font face="Arial">If you wish to load programs in text form
+back into EEPROM, run the !.bat command file in the <strong>ATX80_Import</strong>
+folder. This will ensure that the programs from the text form are
+imported back into the copy program images. Then all you have to
+do is load the programs into the processor and press button 4 to
+save them to the external EEPROM, just as described at the
+beginning of this chapter.</font></p>
+
+<h2><a name="basic"></a><font face="Arial">Description of the
+ATX-80 BASIC</font></h2>
+
+<p><font face="Arial">The ATX-80 BASIC is almost completely
+identical to the ZX-80 BASIC, except for a few small differences.</font></p>
+
+<p><font face="Arial">The program line number can range from 1 to
+9999. After each change in program lines, the program is
+automatically backed up to the internal EEPROM. The internal
+EEPROM has a capacity of only 510 bytes and therefore may not
+hold the entire program. When the ATX-80 is turned on, the
+program stored in the internal EEPROM is restored.</font></p>
+
+<p><font face="Arial">The BASIC ATX-80 operates with integers in
+the range -32768 to +32767. Variables can be of the following
+types:</font></p>
+
+<ul>
+    <li><font face="Arial">an integer variable with an
+        arbitrarily long name (starts with a letter, can be
+        followed by letters or digits)</font></li>
+    <li><font face="Arial">an integer variable with only 1 letter
+        can be used as a FOR loop parameter</font></li>
+    <li><font face="Arial">text variable is 1 letter followed by
+        $, text can be of any length</font></li>
+    <li><font face="Arial">the array is 1 letter, the array index
+        can be 255 max</font></li>
+</ul>
+
+<p><font face="Arial">Operations:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>+ -</strong> ... sum and
+        difference</font></li>
+    <li><font face="Arial"><strong>* /</strong> ...
+        multiplication and division (integer only)</font></li>
+    <li><font face="Arial"><strong>AND</strong> ... bitwise and
+        logical product</font></li>
+    <li><font face="Arial"><strong>OR</strong> ... bitwise and
+        logical sum</font></li>
+    <li><font face="Arial"><strong>NOT</strong> ... bitwise and
+        logical inverse</font></li>
+    <li><font face="Arial"><strong>**</strong> ... power</font></li>
+    <li><font face="Arial"><strong>=</strong> ... comparison of
+        numbers and texts for equality</font></li>
+    <li><font face="Arial"><strong>&lt;</strong> ... comparison
+        of numbers and texts to smaller</font></li>
+    <li><font face="Arial"><strong>&gt;</strong> ... comparison
+        of numbers and texts to greater</font></li>
+</ul>
+
+<p><font face="Arial">Commands, they can be only at the beginning
+of the line or after the THEN command, they are called by
+pressing a letter:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>LIST</strong> ... (A) program
+        listing from the specified line, without entering the
+        line number listing from the beginning</font></li>
+    <li><font face="Arial"><strong>RETURN</strong> ... (B) return
+        from procedure</font></li>
+    <li><font face="Arial"><strong>CLS</strong> ... (C) clearing
+        the screen</font></li>
+    <li><font face="Arial"><strong>DIM</strong> ... (D) array
+        declaration. The array may begin with index 0. The
+        maximum size of the array is 255 (e.g., DIM A(255),
+        indices can be 0 to 255.</font></li>
+    <li><font face="Arial"><strong>SAVE</strong> ... (E) save the
+        program and variables into the slot. This is followed by
+        slot number 1 to 32 for external EEPROM. Without entering
+        a number or by entering a number 0, the program and
+        variables are stored in the processor's internal Flash
+        memory.</font></li>
+    <li><font face="Arial"><strong>FOR</strong> ... (F) loop,
+        followed by a 1-letter variable with a starting value,
+        followed by a <strong>TO</strong> with an ending value.</font></li>
+    <li><font face="Arial"><strong>GO TO</strong> ... (G) jump to
+        the specified line number</font></li>
+    <li><font face="Arial"><strong>POKE</strong> ... (H) store a
+        byte in RAM, followed by the address and contents of the
+        byte. The ATX-80 simulates storing into RAM addresses
+        identical to the ZX-80.</font></li>
+    <li><font face="Arial"><strong>INPUT</strong> ... (I) user
+        input, followed by the destination numeric or text
+        variable</font></li>
+    <li><font face="Arial"><strong>RANDOMISE</strong> ... (J)
+        initialization of the random generator by a specified
+        number, entering 0 or omitting a parameter initializes
+        according to the frame counter</font></li>
+    <li><font face="Arial"><strong>LET</strong> ... (K) setting
+        the content of the variable</font></li>
+    <li><font face="Arial"><strong>FAST</strong> ... (L) setting
+        the fast mode, only 1 top line is displayed and the
+        processor is sped up 4 times. Can only be used while the
+        program is running.</font></li>
+    <li><font face="Arial"><strong>SLOW</strong> ... (M) fast
+        mode setting, full screen will be displayed. Set
+        automatically when the program is exited.</font></li>
+    <li><font face="Arial"><strong>NEXT</strong> ... (N) continue
+        cycle for the specified variable</font></li>
+    <li><font face="Arial"><strong>PRINT</strong> ... (O)
+        printout of variables or text. The ';' character ensures
+        continuation without a space, the ',' character is
+        indented after 8-character tab positions.</font></li>
+    <li><font face="Arial"><strong>MEMORY</strong> ... (P) lists
+        memory information in bytes: program size, variable size,
+        and free RAM space.</font></li>
+    <li><font face="Arial"><strong>NEW</strong> ... (Q) erases
+        the program and variables</font></li>
+    <li><font face="Arial"><strong>RUN</strong> ...(R) runs the
+        program from the specified line. Without specifying a
+        line number, the program starts from the beginning. At
+        the same time, it clears the variables.</font></li>
+    <li><font face="Arial"><strong>STOP</strong> ... (S) stops
+        the program. You can continue with the <strong>CONTINUE</strong>
+        command.</font></li>
+    <li><font face="Arial"><strong>CONTINUE</strong> ... (T)
+        resume the program from the interruption with the <strong>STOP</strong>
+        command.</font></li>
+    <li><font face="Arial"><strong>IF</strong> ... (U) condition.
+        <strong>THEN</strong> is followed by the statement
+        executed when the condition or expression is valid (the
+        expression is valid if non-zero).</font></li>
+    <li><font face="Arial"><strong>GO SUB</strong> .. (V) jump to
+        a procedure. From the procedure, the <strong>RETURN</strong>
+        statement returns to the line following GO SUB.</font></li>
+    <li><font face="Arial"><strong>LOAD</strong> ... (W) Load the
+        program and variables from the slot. This is followed by
+        the slot number 1 to 32 for the external EEPROM. Without
+        entering a number or by entering number 0, the program
+        and variables are loaded from the processor's internal
+        Flash memory.</font></li>
+    <li><font face="Arial"><strong>CLEAR</strong> ... (X) clear
+        variables</font></li>
+    <li><font face="Arial"><strong>REM</strong> ... (Y) comment</font></li>
+</ul>
+
+<p><font face="Arial">Functions and other commands (functions
+must be written in text, they do not have a keyboard shortcut):</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>&quot;</strong> ... (Shift+Y)
+        indicates the beginning and end of the text</font></li>
+    <li><font face="Arial"><strong>THEN</strong> ... (Shift+3)
+        part of the IF condition, indicates the command executed
+        when the condition is met</font></li>
+    <li><font face="Arial"><strong>TO</strong> ... (Shift+4) part
+        of a FOR loop, indicates the end value of a variable</font></li>
+    <li><font face="Arial"><strong>;</strong> ... (Shift+Z) part
+        of the PRINT statement, continues printing from the last
+        position</font></li>
+    <li><font face="Arial"><strong>,</strong> ... (Shift+.) part
+        of the PRINT statement, continue printing from the
+        tabular position</font></li>
+    <li><font face="Arial"><strong>( )</strong> ... (Shift+I,
+        Shift+O) brackets</font></li>
+    <li><font face="Arial"><strong>PEEK</strong> ... Load the
+        contents of memory from the address specified in the
+        brackets. The ATX-80 simulates RAM addresses identical to
+        the ZX-80, including the font address in ROM. The
+        contents of pointers are not simulated; these must be
+        recalculated.</font></li>
+    <li><font face="Arial"><strong>CHR$</strong> ... converting a
+        character code to a text character</font></li>
+    <li><font face="Arial"><strong>CODE</strong> ... conversion
+        of a text character (first character of text) to a
+        numeric code</font></li>
+    <li><font face="Arial"><strong>RND</strong> ... random
+        generator, generates a number from 1 to the specified
+        maximum number</font></li>
+    <li><font face="Arial"><strong>TL$</strong> ... returns the
+        text without the first character</font></li>
+    <li><font face="Arial"><strong>USR</strong> ... not supported
+        in ATX-80</font></li>
+    <li><font face="Arial"><strong>STR$</strong> ... converts
+        number to text</font></li>
+    <li><font face="Arial"><strong>ABS</strong> ... absolute
+        value of number</font></li>
+</ul>
+
+<h2><a name="samples"></a><font face="Arial">Sample programs</font></h2>
+
+<p><font face="Arial">Sample programs are stored in the external
+EEPROM in slots 1 to 32. The contents of the EEPROM can be copied
+to another EEPROM, downloaded to the PC, or loaded from the PC
+into the EEPROM as described in the </font><a href="#eeprom"><font
+face="Arial">EEPROM Programming</font></a><font face="Arial">
+chapter.</font></p>
+
+<p><font face="Arial">The contents of the programs can be found
+in the Programs.txt file in the source code, along with their
+detailed descriptions.</font></p>
+
+<p><font face="Arial">1) Print charset</font></p>
+
+<p><a href="img/program_1.jpg"><font face="Arial"><img
+src="img/program_1m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">2) High precision division</font></p>
+
+<p><a href="img/program_2.jpg"><font face="Arial"><img
+src="img/program_2m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">3) Square root routine</font></p>
+
+<p><a href="img/program_3.jpg"><font face="Arial"><img
+src="img/program_3m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">4) Die throwing</font></p>
+
+<p><a href="img/program_4.jpg"><font face="Arial"><img
+src="img/program_4m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">5) Reaction timer</font></p>
+
+<p><a href="img/program_5.jpg"><font face="Arial"><img
+src="img/program_5m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">6) Histogram of random number</font></p>
+
+<p><a href="img/program_6.jpg"><font face="Arial"><img
+src="img/program_6m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">7) Leap frog</font></p>
+
+<p><a href="img/program_7.jpg"><font face="Arial"><img
+src="img/program_7m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">8) Message encoding</font></p>
+
+<p><a href="img/program_8.jpg"><font face="Arial"><img
+src="img/program_8m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">9) Horse Race</font></p>
+
+<p><a href="img/program_9.jpg"><font face="Arial"><img
+src="img/program_9m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">10) Lunar Lander (run with GO TO 100)</font></p>
+
+<p><a href="img/program_10.jpg"><font face="Arial"><img
+src="img/program_10m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">11) Maze generator</font></p>
+
+<p><a href="img/program_11.jpg"><font face="Arial"><img
+src="img/program_11m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">12) Noughts and Crosses (Tic Tac Toe)</font></p>
+
+<p><a href="img/program_12.jpg"><font face="Arial"><img
+src="img/program_12m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">13) Dr. ATX80 - psycho therapist (run with
+GO TO 120)</font></p>
+
+<p><a href="img/program_13.jpg"><font face="Arial"><img
+src="img/program_13m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">14) NIM game (taking matches)</font></p>
+
+<p><a href="img/program_14.jpg"><font face="Arial"><img
+src="img/program_14m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">15) Blackjack</font></p>
+
+<p><a href="img/program_15.jpg"><font face="Arial"><img
+src="img/program_15m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">16) Bubble sort</font></p>
+
+<p><a href="img/program_16.jpg"><font face="Arial"><img
+src="img/program_16m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">17) Line renumber (run with GO TO 9987)</font></p>
+
+<p><a href="img/program_17.jpg"><font face="Arial"><img
+src="img/program_17m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">18) Draw a picture (restore saved picture
+with GO TO 200)</font></p>
+
+<p><a href="img/program_18.jpg"><font face="Arial"><img
+src="img/program_18m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">19) Calculate day of the week</font></p>
+
+<p><a href="img/program_19.jpg"><font face="Arial"><img
+src="img/program_19m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">20) Chinese remainder</font></p>
+
+<p><a href="img/program_20.jpg"><font face="Arial"><img
+src="img/program_20m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">21) Simple Simon - write letters</font></p>
+
+<p><a href="img/program_21.jpg"><font face="Arial"><img
+src="img/program_21m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">22) Hangman - guess letters</font></p>
+
+<p><a href="img/program_22.jpg"><font face="Arial"><img
+src="img/program_22m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">23) Maths drill - learn addition and
+subtraction</font></p>
+
+<p><a href="img/program_23.jpg"><font face="Arial"><img
+src="img/program_23m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">24) Learn capitals of the World</font></p>
+
+<p><a href="img/program_24.jpg"><font face="Arial"><img
+src="img/program_24m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">25) Life - cellular automaton</font></p>
+
+<p><a href="img/program_25.jpg"><font face="Arial"><img
+src="img/program_25m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">26) Prime number generator</font></p>
+
+<p><a href="img/program_26.jpg"><font face="Arial"><img
+src="img/program_26m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">27) Simultaneous equations</font></p>
+
+<p><a href="img/program_27.jpg"><font face="Arial"><img
+src="img/program_27m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">28) Square root to 3 decimal places</font></p>
+
+<p><a href="img/program_28.jpg"><font face="Arial"><img
+src="img/program_28m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">29) Pontoon (cards)</font></p>
+
+<p><a href="img/program_29.jpg"><font face="Arial"><img
+src="img/program_29m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">30) Chomp (game - take grid)</font></p>
+
+<p><a href="img/program_30.jpg"><font face="Arial"><img
+src="img/program_30m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">31) Mastermind (game - guess digits)</font></p>
+
+<p><a href="img/program_31.jpg"><font face="Arial"><img
+src="img/program_31m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">32) Pinch (game - capture oponent)</font></p>
+
+<p><a href="img/program_32.jpg"><font face="Arial"><img
+src="img/program_32m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<h2><a name="download"></a><font face="Arial">Download</font></h2>
+
+<ul>
+    <li><font face="Arial">Wiring diagram in Eagle Free </font><a
+        href="dwn/ATX80_diagram.zip"><font face="Arial">ATX80_diagram.zip</font></a></li>
+    <li><font face="Arial">Graphic materials </font><a
+        href="dwn/ATX80_png.zip"><font face="Arial">ATX80_png.zip</font></a></li>
+    <li><font face="Arial">Source codes ( compiled with WinAVR
+        for ATmega8, ATmega88, ATmega168 and ATmega328) </font><a
+        href="dwn/ATX80_src.zip"><font face="Arial">ATX80_src.zip</font></a></li>
+    <li><font face="Arial">Utilities for uploading and
+        downloading sample programs in EEPROM, compiled in MSVC
+        2005 </font><a href="dwn/ATX80_util.zip"><font
+        face="Arial">ATX80_util.zip</font></a></li>
+</ul>
+
+<h2><a name="partlist"></a><font face="Arial">Parts list</font></h2>
+
+<ul>
+    <li><font face="Arial">432-027, 1 pc, procesor ATmega8A-PU,
+        85 Kc </font><a
+        href="https://www.gme.cz/atmega8a-pu-dip28-atmel"><font
+        face="Arial">https://www.gme.cz/atmega8a-pu-dip28-atmel</font></a><font
+        face="Arial"><br>
+        ... ATmega88 (cheaper), ATmega168 or ATmega328 in PDIP-28
+        case can also be used</font></li>
+    <li><font face="Arial">414-041, 1 pc, memory 32KB (256kbit)
+        EEPROM 24LC256-I/P, 27 Kc </font><a
+        href="https://www.gme.cz/24lc256-i-p-dip8-microchip"><font
+        face="Arial">https://www.gme.cz/24lc256-i-p-dip8-microchip</font></a></li>
+    <li><font face="Arial">131-090, 1 pc, quartz 24 MHz HC49U/S,
+        5,40 Kc </font><a
+        href="https://www.gme.cz/krystal-hc49-us-qm-24-000mhz"><font
+        face="Arial">https://www.gme.cz/krystal-hc49-us-qm-24-000mhz</font></a></li>
+    <li><font face="Arial">120-060, 2 pcs, ceramic capacitor
+        100nF, 3 * 1,80 = 5,4 Kc </font><a
+        href="https://www.gme.cz/ck-100n-63v-y5v-rm5-08-80-20"><font
+        face="Arial">https://www.gme.cz/ck-100n-63v-y5v-rm5-08-80-20</font></a></li>
+    <li><font face="Arial">120-251, 1 pc, ceramic capacitor 10nF,
+        1,90 Kc </font><a
+        href="https://www.gme.cz/ck-10n-100v-z5v-rm5-08-80-20-hitano"><font
+        face="Arial">https://www.gme.cz/ck-10n-100v-z5v-rm5-08-80-20-hitano</font></a><font
+        face="Arial"><br>
+        ... the value doesn't matter much</font></li>
+    <li><font face="Arial">120-125, 2 pcs, ceramic capacitor
+        22pF, 2 * 2,70 = 5,4 Kc </font><a
+        href="https://www.gme.cz/ck-22p-50v-npo-rm5-08-5"><font
+        face="Arial">https://www.gme.cz/ck-22p-50v-npo-rm5-08-5</font></a><font
+        face="Arial"><br>
+        ... 27 pF can also be used</font></li>
+    <li><font face="Arial">114-453, 2 pcs, resistor 100 ohms, 2 *
+        1,90 = 3,8 Kc </font><a
+        href="https://www.gme.cz/rm-100r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-100r-0309-1w-1</font></a><font
+        face="Arial"><br>
+        ... can also be replaced by a smaller value (it is better
+        not to use a larger one, the synchronization might be
+        off)</font></li>
+    <li><font face="Arial">114-455, 1 pc, resistor 150 ohms, 2,20
+        Kc </font><a href="https://www.gme.cz/rm-150r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-150r-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-460, 1 pc, resistor 470 ohms, 2,20
+        Kc </font><a href="https://www.gme.cz/rm-470r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-470r-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-463, 1 pc, resistor 1k, 2 Kc </font><a
+        href="https://www.gme.cz/rm-1k-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-1k-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-474, 1 pc, resistor 10k, 2,20 Kc </font><a
+        href="https://www.gme.cz/rm-10k-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-10k-0309-1w-1</font></a><font
+        face="Arial"><br>
+        ... the value doesn't matter much</font></li>
+    <li><font face="Arial">823-011, 1 pc, DIL sockets 8pin SOKL8,
+        1,90 Kc </font><a href="https://www.gme.cz/sokl-8"><font
+        face="Arial">https://www.gme.cz/sokl-8</font></a></li>
+    <li><font face="Arial">823-026, 1 pc, DIL sockets 28pin SOKL
+        28U, 4,30 Kc </font><a href="https://www.gme.cz/sokl-28u"><font
+        face="Arial">https://www.gme.cz/sokl-28u</font></a></li>
+    <li><font face="Arial">630-749, 40 pcs, microswitch into PCB
+        TC-0107-T, 40 * 2,80 = 112 Kc (better price for 50 pieces
+        50 * 1,84 = 92 Kc) </font><a
+        href="https://www.gme.cz/mikrospinac-do-dps-tc-0107-t"><font
+        face="Arial">https://www.gme.cz/mikrospinac-do-dps-tc-0107-t</font></a></li>
+    <li><font face="Arial">832-120, 1 pc, USB 2.0 B socket into
+        PCB 90° DS1099-WN0, 13 Kc </font><a
+        href="https://www.gme.cz/konektor-usb1x90b-pcb"><font
+        face="Arial">https://www.gme.cz/konektor-usb1x90b-pcb</font></a></li>
+    <li><font face="Arial">801-003, 1 pc, D-Sub 15pin socket into
+        PCB 90° CAN 15 3Z 90, 21 Kc </font><a
+        href="https://www.gme.cz/konektor-can-15-3z-90"><font
+        face="Arial">https://www.gme.cz/konektor-can-15-3z-90</font></a></li>
+    <li><font face="Arial">808-166, 1 pc, Cinch RCA socket into
+        PCB 90° RS-101F, 5,30 Kc </font><a
+        href="https://www.gme.cz/konektor-cinch-zasuvka-kovova-do-dps-90-zluta"><font
+        face="Arial">https://www.gme.cz/konektor-cinch-zasuvka-kovova-do-dps-90-zluta</font></a></li>
+    <li><font face="Arial">821-256, 1 pc, fork connector 2x3 pin
+        to PCB 90° MLW06A, 5,10 Kc </font><a
+        href="https://www.gme.cz/konektor-kon-069-00"><font
+        face="Arial">https://www.gme.cz/konektor-kon-069-00</font></a></li>
+    <li><font face="Arial">661-064, 1 pc, photocuprextit
+        75x100x1.5mm single layer, 44 Kc </font><a
+        href="https://www.gme.cz/fotocuprextit-fr4-75x100x1-5-jednovrstvy"><font
+        face="Arial">https://www.gme.cz/fotocuprextit-fr4-75x100x1-5-jednovrstvy</font></a></li>
+</ul>
+
+<p><font face="Arial">Total price (without PCB): 285 Kc</font></p>
+
+<p align="right"><font face="Arial">Miroslav Nemecek<br>
+</font><a href="mailto:Panda38@seznam.cz"><font face="Arial">Panda38@seznam.cz</font></a></p>
+<div align="center"><center>
+
+<table border="0" width="100%">
+    <tr>
+        <td width="33%"><p align="left"><a href="../index.html"><font
+        face="Arial">&lt;&lt; Back</font></a></p>
+        </td>
+        <td width="33%">&nbsp;</td>
+        <td width="34%">&nbsp;</td>
+    </tr>
+</table>
+</center></div>
+</body>
+</html>

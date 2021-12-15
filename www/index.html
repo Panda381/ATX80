@@ -1,0 +1,990 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=utf-8">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>ATX80, klon počítače ZX-80 s procesorem ATmega8</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<div align="center"><center>
+
+<table border="0" width="100%">
+    <tr>
+        <td width="33%"><p align="left"><a href="../index.html"><font
+        face="Arial">&lt;&lt; Zpět</font></a></p>
+        </td>
+        <td width="33%">&nbsp;</td>
+        <td width="34%"><p align="right"><font face="Arial">  <u>Česky:</u>
+        <img src="img/cz2.gif" width="50" height="30">, </font><a
+        href="index_en.html"><font face="Arial">English: <img
+        src="img/en.gif" border="0" width="50" height="30"></font></a></p>
+        </td>
+    </tr>
+</table>
+</center></div>
+
+<p align="center"><font color="#FF8000" size="7" face="Arial"><strong>ATX-80</strong></font></p>
+
+<p align="center"><font color="#000000" size="4" face="Arial"><strong>Klon
+počítače ZX-80 s procesorem ATmega8</strong></font></p>
+
+<p align="center"><font face="Arial">Poslední aktualizace:
+15.12.2021</font></p>
+
+<p align="center"><font face="Arial">ATX-80 na GitHub: </font><a
+href="https://github.com/Panda381/ATX80"><font face="Arial">https://github.com/Panda381/ATX80</font></a></p>
+
+<p align="center"><a href="img/atx80_1.jpg"><img
+src="img/atx80_1_m.jpg" border="0" width="400" height="312"></a></p>
+
+<p><font face="Arial">ATX-80 je mikropočítač odvozený od počítače
+ZX-80, s procesorem ATmega8. Neprovádí emulaci kódu, ale
+nahrazuje původní počítač vlastním kódem s podobnou funkčností
+v AVR assembleru. Umožňuje výstup obrazu na VGA monitor nebo
+na PAL/NTSC televizor. BASIC programy lze uchovávat v interní
+EEPROM, interní Flash nebo externí EEPROM paměti (32 paměťových
+slotů) a také přenášet mezi PC a pamětí. Předností je
+snadná konstrukce a malé rozměry. Může sloužit jako malý
+levný počítač pro výuku základů programování v jazyku
+BASIC. Součástí 32 ukázkových programů.</font></p>
+
+<p><font face="Arial"><strong>Obsah</strong></font></p>
+
+<ul>
+    <li><a href="#description"><font face="Arial">Popis</font></a></li>
+    <li><a href="#errata"><font face="Arial">Chyby ZX-80 BIOS</font></a></li>
+    <li><a href="#diagram"><font face="Arial">Schéma zapojení</font></a></li>
+    <li><a href="#construction"><font face="Arial">Konstrukce</font></a></li>
+    <li><a href="#programming"><font face="Arial">Naprogramování
+        a oživení</font></a></li>
+    <li><a href="#eeprom"><font face="Arial">Programování
+        EEPROM s ukázkovými programy</font></a></li>
+    <li><a href="#basic"><font face="Arial">Popis jazyku ATX-80
+        BASIC</font></a></li>
+    <li><a href="#samples"><font face="Arial">Ukázkové programy</font></a></li>
+    <li><a href="#download"><font face="Arial">Ke stažení</font></a></li>
+    <li><a href="#partlist"><font face="Arial">Seznam součástek</font></a></li>
+</ul>
+
+<p align="center"><a href="img/atx80_8.jpg"><font face="Arial"><img
+src="img/atx80_8_m.jpg" border="0" width="400" height="274"></font></a></p>
+
+<h2><a name="description"></a><font face="Arial">Popis</font></h2>
+
+<p><font face="Arial">Původním záměrem projektu bylo
+vytvořit počítač podobných vlastností a s podobným
+technickým omezením, jaké měl původní ZX-80. Tedy plně
+funkční interpreter jazyku BASIC jen s 1 KB paměti RAM a co
+nejblíže 4 KB paměti ROM. Projekt byl pojat i jako studium
+původního ROM BIOSu ZX-80. Nutno uznat, že původní BIOS
+ZX-80 byl obdivuhodným výtvorem. Kromě toho, že byl velmi
+inovátorský, byl vytvořen s vysokou optimalizací velikosti
+kódu a přestože to vyžadovalo značné znepřehlednění toku
+dat mezi funkcemi, autor si udržel přehled nad kódem s
+minimální chybovostí. Snažil jsem se zachovat co
+nejpřesnější funkčnost původního kódu a svůj kód
+podrobně komentovat, což může být užitečným doplňkem k
+objasnění funkce BIOSu. BIOS ZX-80 je velmi přínosným a poučným
+studijním materiálem a i přes svou letitost si zaslouží
+více pozornosti jako obdivuhodné dílo.</font></p>
+
+<p><font face="Arial">K přepisu kódu byl zvolen procesor
+ATmega8, který má 1 KB RAM (tedy stejné omezení jako ZX-80) a
+8 KB Flash paměti. Paměti Flash je sice více oproti původním
+4 KB, ale kód byl po přepisu o asi 40% delší (instrukce AVR
+jsou 16-bitové) a byly doplněné další funkce, jako složitější
+generátor obrazu, obsluha pamětí, 1 KB z interní Flash byl
+využit jako pamětový slot k ukládání programů, takže
+těch 8 KB paměti bylo účelně využito.</font></p>
+
+<p><font face="Arial">ATX-80 obsahuje klávesnici ze 40
+mikrospínačů. Může generuje obraz pro VGA monitor a také
+obraz v PAL a NTSC televizní normě přes Cinch konektor. Napájí
+se externím +5V zdrojem přes USB konektor (USB nabíječka nebo
+konektor počítače). K ukládání uživatelských BASIC
+programů slouží externí paměť EEPROM 32 KB, která umožňuje
+uložení 32 programů do 32 paměťových slotů. Kromě externí
+EEPROM paměti lze využít i jeden interní paměťový slot v
+paměti Flash procesoru a tak lze např. kopírovat programy mezi
+různými externími EEPROM pamětmi. Editovaný program je současně
+automaticky zrcadlově ukládán i do interní EEPROM paměti. Ta
+má sice velikost jen 512 bajtů, některé programy se do ní
+tedy nevejdou celé, ale jednak většina programů nebývá větší
+než 512 bajtů (paměť RAM musí být sdílena s proměnnými a
+s videopamětí) a jednak u delších programů je zálohována
+alespoň jejich větší část.</font></p>
+
+<p><font face="Arial">Přednosti ATX-80 oproti původnímu ZX-80:</font></p>
+
+<ul>
+    <li><font face="Arial">Výstup obrazu na VGA</font></li>
+    <li><font face="Arial">Obraz se generuje i za běhu programu
+        (lze použít režimy FAST a SLOW)</font></li>
+    <li><font face="Arial">Uchování editovaného programu i po
+        vypnutí</font></li>
+    <li><font face="Arial">Zápis programů do externí EEPROM</font></li>
+    <li><font face="Arial">Autorepeat kláves</font></li>
+    <li><font face="Arial">Funkce informací o paměti</font></li>
+    <li><font face="Arial">Vyšší rychlost běhu programu</font></li>
+    <li><font face="Arial">Malé rozměry</font></li>
+</ul>
+
+<p><font face="Arial">Omezení ATX-80 oproti původnímu ZX-80:</font></p>
+
+<ul>
+    <li><font face="Arial">Nelze spouštět programy ve strojovém
+        kódu (funkce USR je nefunkční)</font></li>
+    <li><font face="Arial">Paměť nelze navýšit externí pamětí</font></li>
+    <li><font face="Arial">Nelze připojit další zařízení přes
+        externí sběrnici</font></li>
+    <li><font face="Arial">K ukládání programů nelze použít
+        magnetofon, lze využít jen vlastní EEPROM paměť</font></li>
+    <li><font face="Arial">Generované znaky obrazu obsahují
+        navíc 9. bílý sloupeček (důsledek generování
+        obrazu SPI portem)</font></li>
+</ul>
+
+<p align="center"><a href="img/atx80_2.jpg"><font face="Arial"><img
+src="img/atx80_2_m.jpg" border="0" width="400" height="287"></font></a></p>
+
+<h2><a name="errata"></a><font face="Arial">Chyby ZX-80 BIOS</font></h2>
+
+<p><font face="Arial">Při studiu ZX-80 BIOSu jsem narazil na pár
+menších chyb.</font></p>
+
+<p><font face="Arial">1) Chyba s REM příkazem. Adresa REM
+rutiny má být L0849 namísto L084A. Chyba způsobí, že uvedením
+příkazu REM bez parametrů (bez textu) se neprovede následující
+řádek.</font></p>
+
+<p><font face="Arial">2) Chyba v rutině ED-EDIT - následující
+instrukce mají být v opačném pořadí. Chyba může způsobit
+zhroucení počítače při zápisu příkazu ve chvíli plně
+obsazené paměti.</font></p>
+
+<pre><font size="4">	JR NC,L03A7	; back to ED-COPY if not enough
+			; room to fill edit line.
+	POP HL		; restore program position.</font></pre>
+
+<p><font face="Arial">3) Následující chyba se sice neprojeví,
+ale je potenciálním rizikem při změně překladu. Na začátku
+rutiny L03CB ED-EDIT chybí inicializace registru B na hodnotu, představující
+počet řádků k tisku (je potřeba číslo 2 nebo vyšší). V
+tomto místě obsahuje registr B hodnotu 3 (vzniklou z adresy
+L03CB), což vyhovuje, ale překladem od jiné adresy by se mohla
+přestat tisknout spodní obrazovka. Je ovšem možné, že tam
+tuto instrukci autor vypustil vědomě, v rámci optimalizace.</font></p>
+
+<h2><a name="diagram"></a><font face="Arial">Schéma zapojení</font></h2>
+
+<p><font face="Arial">Hlavním procesorem je ATmega8. V případě
+potřeby může být nahrazen procesory ATmega88, ATmega168 nebo
+ATmega328, které jsou pinově kompatibilní. Je však nutno
+použít jiný kód firmware, který je také připraven v balíku
+ke stažení. Větší paměť u vyšších typů procesorů není
+ovšem využita.</font></p>
+
+<p><font face="Arial">Procesor je poháněn krystalem 24 MHz.
+Tato frekvence je nutná k zobrazení potřebného rozlišení na
+VGA monitoru. Přestože frekvence použitého krystal leží nad
+mezemi deklarovanými výrobcem, v praxi bylo zjišťeno, že
+prakticky všechny procesory takové přetaktování zvládají v
+pořádku. Přesto je vhodné pro procesor použít objímku a v
+případě obtíží vyzkoušet jiný kus procesoru. Příčinou
+chybné funkce může být i nedostatečné napájecí napětí.
+Mezní kmitočet procesoru je závislý na napájení, nízké
+napájecí napětí může být důvodem že procesor nebude správně
+pracovat s použitým krystalem.</font></p>
+
+<p><font face="Arial">Klávesnice je zapojena do matice 5x8
+kláves, s podobným zapojením jako původní ZX-80, jen s opačným
+tokem proudu. Při skenování klávesnice jsou signály COL1 až
+COL5 zapojeny jako vstup (tedy stav s vysokou impedanci) a pouze
+jeden ze signálů COL je nastaven jako výstup s úrovní LOW.
+Signály ROW1 až ROW8 jsou zapojeny jako vstup s interním
+pull-up rezistorem. Při skenování klávesnice se aktivuje
+jeden z COL signálů do LOW úrovně a čtením ROW signálů se
+zjistí stisknuté tlačítko.</font></p>
+
+<p><font face="Arial">Výstup MOSI z SPI generátoru je veden
+jako obrazový signál jednak na VGA konektor a jednak na CINCH
+pro výstup na televizor. Na výstupu se předpokládá zatížení
+vstupním odporem 75 ohmů, což zajistí potřebnou napěťovou
+úroveň 0,7V. Signál SYNC je výstup z časovače Timer1, který
+zajišťuje horizontální synchronizaci. Časovač Timer1
+současně vyvolává přerušení generátoru obrazu, který
+vysílá obrazová data přes SPI řadič.</font></p>
+
+<p><font face="Arial">Signál VSYNC je využíván pouze v módu
+&quot;starý VGA displej&quot;. Jinak je běžně generována
+synchronizační směs CSYNC na výstupu SYNC. Vertikální
+signál je v synchronizační směsi vytvořen negací
+horizontálního synchronizačního signálu. Většina současných
+VGA monitorů podporuje synchronizační směs a pracuje v tomto
+módu dobře. Pouze starší VGA monitory vyžadují použití i
+signálu VSYNC. U většiny monitorů by zpravidla neměl být
+pozorován rozdíl mezi módy starý/nový VGA monitor.</font></p>
+
+<p><font face="Arial">Externí EEPROM paměť je připojena přes
+TWI/I2C signály (SDA a SCL). Jako nejvhodnější typ je doporučena
+32 KB paměť 24LC256P, která pojme 32 uživatelských programů
+(32 slotů, kde každý slot má velikost 1 KB). Kromě ní je možné
+použít i paměti 24LC32 (4KB, tj. 4 sloty), 24LC64 (8 KB, tj. 8
+slotů), 24LC128 (16 KB, tj. 16 slotů) a 24LC512 (64 KB, tj. 64
+slotů). Paměti se liší jen počtem dostupných paměťových
+slotů.</font></p>
+
+<p><font face="Arial">Pro paměť EEPROM je vhodné použít
+objímku, aby ji bylo možné v případě potřeby vyměnit za
+jinou, s jinými uloženými programy. Programy lze mezi pamětmi
+kopírovat jednak s využitím slotu v interní Flash paměti, a
+jednak lze využít přiložené kopírovací utility.</font></p>
+
+<p><font face="Arial">Použité EEPROM paměti obsahují vstupní
+pin pro ochranu proti zápisu. ATX-80 s tím sice nepočítá,
+ale bylo by možné na desku doplnit ještě konfigurační
+propojku, kterou je možné povolit nebo zakázat zápis do
+EEPROM paměti a chránit tak její obsah proti nechtěnému přepsání.</font></p>
+
+<p><font face="Arial"><em><strong>Poznámka</strong></em><em>:
+ATX-80 nerozezná velikost připojené EEPROM paměti. Použití
+správného čísla slotu ponechává na uživateli.
+Použijete-li číslo slotu mimo rozsah paměti, dojde k
+přetočení čísla slotu operací modulo na jiný slot (EEPROM
+ignoruje nevyužité vyšší adresové bity) a může tak dojít
+k nechtěnému přepsání jiného uloženého programu. Např. zápisem
+do slotu 34 u paměti 32 KB bude proveden zápis do slotu 2.</em></font></p>
+
+<p><font face="Arial"><em><strong>Poznámka 2:</strong></em><em>
+Předpokládá se stejný hardware i pro plánovaný klon počítače
+ZX-81, jen bude použit jiný procesor s větší pamětí (pravděpodobně
+ATmega328). Použijte proto pro procesor objímku, aby byl snadno
+vyměnitelný.</em></font></p>
+
+<p>&nbsp;</p>
+
+<p><a href="img/ATX80_diagram.png"><font face="Arial"><img
+src="img/ATX80_diagram_m.jpg" border="0" width="1024"
+height="478"></font></a></p>
+
+<h2><a name="construction"></a><font face="Arial">Konstrukce</font></h2>
+
+<p><font face="Arial">ATX-80 je navržen pro jednostranný plošný
+spoj o rozměru 100x75 mm - jednak z důvodu omezení freeware
+verze Eagle editoru, a jednak protože to je jeden z rozměrů
+běžně prodávaných plošných spojů pro fotocestu. Plošné
+spoje vyrábím vytištěním předlohy v inkoustové tiskárně
+na průhlednou folii (slepení 2 vytištěných předloh
+izolepou, kvůli lepšímu krytí), osvícení pomocí pole
+UV-LED (10 minut ze vzdálenosti 30 cm), vyvolání v hydroxidu
+draselném a vyleptání v chloridu železitém.</font></p>
+
+<p><font face="Arial">Upozorňuji, že v případě zakázkové
+výroby plošného spoje je nutno v předloze zkontrolovat
+definice průměrů děr (vrtal jsem sám a proto neověřeno).</font></p>
+
+<p><a href="img/atx80_3.jpg"><font face="Arial"><img
+src="img/atx80_3_m.jpg" border="0" width="400" height="275"></font></a></p>
+
+<p><font face="Arial">Dolní strana plošného spoje</font></p>
+
+<p><a href="img/ATX80_bottom.png"><font face="Arial"><img
+src="img/ATX80_bottom_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Horní strana plošného spoje, lze
+nahradit drátovými propojkami</font></p>
+
+<p><a href="img/ATX80_top.png"><font face="Arial"><img
+src="img/ATX80_top_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Potisk</font></p>
+
+<p><a href="img/ATX80_print.png"><font face="Arial"><img
+src="img/ATX80_print_m.jpg" border="0" width="400" height="322"></font></a></p>
+
+<p><font face="Arial">Montáž součástek. Pro procesor i EEPROM
+použijte objímku.</font></p>
+
+<p><a href="img/ATX80_mounte.png"><font face="Arial"><img
+src="img/ATX80_mounte_m.jpg" border="0" width="640" height="515"></font></a></p>
+
+<p><font face="Arial">Osazená deska</font></p>
+
+<p><a href="img/atx80_4.jpg"><font face="Arial"><img
+src="img/atx80_4_m.jpg" border="0" width="400" height="323"></font></a></p>
+
+<p><a href="img/atx80_5.jpg"><font face="Arial"><img
+src="img/atx80_5_m.jpg" border="0" width="400" height="290"></font></a></p>
+
+<p><font face="Arial">Přes tlačítka je přeložen štítek s
+popiskami tlačítek. Vytiskl jsem ho na běžný papír na
+inkoustové tiskárně, z obou stran přelepil izolepou a poté
+vysekal díry pro tlačítka výsečníkem 4 mm.</font></p>
+
+<p><a href="img/ATX80_label.png"><font face="Arial"><img
+src="img/ATX80_label_m.jpg" border="0" width="400" height="174"></font></a></p>
+
+<p><font face="Arial">Celá sestava</font></p>
+
+<p><a href="img/atx80_1.jpg"><img src="img/atx80_1_m.jpg"
+border="0" width="400" height="312"></a></p>
+
+<h2><a name="programming"></a><font face="Arial">Naprogramování
+a oživení</font></h2>
+
+<p><font face="Arial">Pojistky nastavte následujícím způsobem:</font></p>
+
+<p><font face="Arial">ATmega8: low 0xEF (default 0xE1), high 0xC7
+(default 0xD9)<br>
+ATmega88: low 0xF7 (default 0x62), high 0xD7 (default 0xDF), ext
+0xFF (default 0xF9)<br>
+ATmega168: low 0xF7 (default 0x62), high 0xD7 (default 0xDF), ext
+0xFF (default 0xF9)<br>
+ATmega328: low 0xF7 (default 0x62), high 0xD7 (default 0xD9), ext
+0xFF (default 0xFF)</font></p>
+
+<p><font face="Arial">V pojistkách je nastaveno mapování boot
+loaderu paměti s nejmenší velikostí (je potřebné kvůli zápisu
+do interní flash paměti), ochrana interní EEPROM při
+programování a rychlý externí krystal.</font></p>
+
+<p><font face="Arial">Připojíte-li po naprogramování
+procesoru VGA monitor, měla by být vidět základní bílá
+plocha s kurzozem &quot;K&quot; v levém dolním rohu. Nestane-li
+se tak, může být zvolen jiný videomód než implicitní VGA.
+Přepnutí videomódu provedete tak, že podržíte na
+klávesnici některé z tlačítek <strong>1</strong> až <strong>4</strong>
+a současně zapnete napájení:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>1 + napájení:</strong>
+        starý VGA monitor (používá VSYNC signál)</font></li>
+    <li><font face="Arial"><strong>2 + napájení:</strong> nový
+        VGA monitor (používá synchronizační směs CSYNC)</font></li>
+    <li><font face="Arial"><strong>3 + napájení:</strong> NTSC
+        televizní videomód (výstup přes CINCH konektor)</font></li>
+    <li><font face="Arial"><strong>4 + napájení:</strong> PAL
+        televizní videomód (výstup přes CINCH konektor)</font></li>
+</ul>
+
+<p><font face="Arial">Zvolená konfigurace se uchová v
+posledním bajtu EEPROM paměti pro příště. Nejde-li videomód
+přepnout, můžete mít zkrat na některém z tlačítek.</font></p>
+
+<p><font face="Arial">Pozor ať uvedenou operaci s nastavením
+vieomódu nepoužijete u procesoru s kopírovací utilitou, mohlo
+by dojít k nechtěné aktivaci programování externí EEPROM.</font></p>
+
+<p><font face="Arial">Zda procesor pracuje, můžete zkontrolovat
+i bez připojení displeje. Zasuňte LED do VGA konektoru mezi
+piny 14 (anoda, dlouhý plus vývod) a 10 (katoda, kratší minus
+vývod). Zapnete-li videomód 1 (starý VGA monitor), LED se
+rozsvítí (VSYNC signál je aktivní), při ostatních
+videomódech svítit nebude. Nebo můžete LED zasunout do CINCH
+konektoru (anoda do dutinky, katoda na kostru) - generuje-li se
+obraz, LEDka bude svítit.</font></p>
+
+<h2><a name="eeprom"></a><font face="Arial">Programování EEPROM
+s ukázkovými programy</font></h2>
+
+<p><font face="Arial"><strong>Upload programů do EEPROM</strong></font></p>
+
+<p><font face="Arial">Po vyzkoušení základní funkce ATX-80
+doporučuji naprogramovat připojenou externí EEPROM paměť. V
+příloze naleznete sadu utilit, s jejichž pomocí nahrajete do
+EEPROM sadu 32 ukázkových programů. Je k tomu nutné buď
+přeprogramovat hlavní procesor, nebo použít jiný procesor,
+sloužící jako &quot;kopírka&quot;.</font></p>
+
+<p><font face="Arial">V balíku utilit je složka <strong>ATX80_Import</strong>,
+kde naleznete firmware (soubory BIN) pro kopírovací procesor, připravený
+pro procesory ATmega8/88/168/328 (první číslo ve jménu
+souboru BIN označuje procesor). Pro každý typ procesoru jsou připraveny
+3 sady programů: slot 1 až 12, slot 13 až 24 a slot 25 až 32.
+Obsahy programů naleznete v balíku utilit v souborech
+Programs_1.txt, Programs_2.txt a Programs_3.txt. Případně i s
+popiskami programů v souboru Programs.txt v balíku zdrojových
+kódu ATX-80.</font></p>
+
+<p><font face="Arial">Kopírovací program kvůli úspoře
+paměti nepoužívá displej, ale jen indikační LED diodu. Zasuňte
+ji do VGA konektoru na VSYNC signál, mezi piny 14 (anoda,
+dlouhý plus vývod) a 10 (katoda, kratší minus vývod).</font></p>
+
+<p><a href="img/atx80_6.jpg"><font face="Arial"><img
+src="img/atx80_6_m.jpg" border="0" width="400" height="198"></font></a></p>
+
+<p><font face="Arial"><img src="img/atx80_7_m.jpg" width="250"
+height="124"></font></p>
+
+<p><font face="Arial">Nahrajte do procesoru program *_1.bin s
+první sadou ukázkových programů. LED dioda začne rychle
+blikat jako indikace, že je procesor v pohotovostním stavu.
+Stisknete-li nyní na klávesnici tlačítko <strong>4</strong>,
+dioda se na několik sekund rozsvítí trvalým svitem
+indikujícím, že probíhá programování paměti EEPROM. Poté
+se opět rychle rozbliká k indikaci, že operace byla
+dokončena. Postupně takto nahrajte i další 2 sady
+ukázkových programů. Tlačítko je potřeba stisknout alespoň
+na půl sekundy aby došlo k jeho registraci - LED dioda se musí
+rozsvítit na minimálně 1 sekundu.</font></p>
+
+<p><font face="Arial"><strong>Kopírování programů mezi EEPROM</strong></font></p>
+
+<p><font face="Arial">Soubor programů v balíku utilit slouží
+též ke stažení nebo kopírování programů z externí EEPROM
+paměti. Ke zkopírování obsahu EEPROM do jiné paměti
+použijte následující postup.</font></p>
+
+<p><font face="Arial">Do procesoru nahrajte program ze složky <strong>ATX80_Copy</strong>
+pro příslušný procesor. LED dioda se rozbliká pro indikaci připravenosti.
+Stiskněte některé z tlačítek 1 až 3. LED se na chvíli
+rozsvítí jako indikace probíhající operace a programy z
+EEPROM se stáhnou do interní Flash paměti procesoru. Tlačítko
+určuje, které sloty se stáhnou. Tlačítkem <strong>1</strong>
+se stáhnou sloty 1 až 11, tlačítkem <strong>2</strong> sloty
+12 až 22 a tlačítkem <strong>3</strong> sloty 23 až 32.
+Teoreticky se do paměti ATmega8 nemusí vlézt 11 slotů -
+znamenaly by 11 KB paměti, ale ATmega8 má jen 8 KB. V praxi je
+většina programů menších a tak se vejdou i do 8 KB. Kdyby někdy
+ne, bylo by nutné použít procesor s větší pamětí nebo
+upravit počty slotů ve zdrojových kódech kopírovacího
+programu.</font></p>
+
+<p><font face="Arial">Po stažení programů do procesoru
+vypněte napájení, vyměňte EEPROM paměť a zapněte napájení.
+Tlačítkem <strong>4</strong> uložíte nahrané programy z
+Flash paměti do nové externí EEPROM paměti. Ukládají se všechny
+programy které jsou v paměti a ukládají se do stejných slotů,
+ze kterých byly stažené.</font></p>
+
+<p><font face="Arial"><strong>Download programů z EEPROM</strong></font></p>
+
+<p><font face="Arial">Pomocí utilit můžete programy stáhnout
+i do PC. Nejdříve jako v předešlém případě stáhněte příslušnou
+sadu programů do Flash paměti procesoru (tlačítkem 1 až 3).
+Připojte programátor procesoru a stáhněte Flash paměť
+procesoru do složky ATX80_Copy, do souborů se jménem 1.bin až
+3.bin. Ve složce <strong>ATX80_Export</strong> spusťte povelový
+soubor !.bat. To zajistí vyexportování programů ze stažených
+obrazů Flash pamětí do textových souborů Programs_1.txt až
+Programs_3.txt v základní složce utilit. V souborech můžete
+upravovat stažené soubory v textovém tvaru. Před kódem každého
+programu je návěští &quot;SLOT x&quot; které označuje, do
+kterého slotu program patří. Návěští označuje začátek
+programu pro další zpracování. Všechny následující řádky
+začínající číslem jsou zpracovány jako programové řádky.
+Za programovými řádky mohou následovat příkazy LET nebo
+DIM, obsahující naplnění číselných nebo textových proměnných.</font></p>
+
+<p><font face="Arial">Budete-li chtít programy v textovém tvaru
+nahrát zpět do EEPROM, spusťe ve složce <strong>ATX80_Import</strong>
+povelový soubor !.bat. Ten zajistí naimportování programů z
+textového tvaru zpět do obrazů kopírovacích programů. Poté
+už jen stačí nahrát programy do procesoru a stiskem tlačítka
+4 je uložit do externí EEPROM, stejně jak bylo popsáno na začátku
+této kapitoly.</font></p>
+
+<h2><a name="basic"></a><font face="Arial">Popis jazyku ATX-80
+BASIC</font></h2>
+
+<p><font face="Arial">ATX-80 BASIC je téměř plně shodný s
+jazykem ZX-80 BASIC, až na pár malých odchylek.</font></p>
+
+<p><font face="Arial">Číslo programového řádku může být v
+rozsahu 1 až 9999. Po každé změně v řádcích programu se
+automaticky provede zálohování programu do interní paměti
+EEPROM. Interní paměť EEPROM má kapacitu pouze 510 bajtů a
+nemusí se proto do ní vejít celý program. Po zapnutí ATX-80
+se zpět obnoví program uchovaný v interní EEPROM.</font></p>
+
+<p><font face="Arial">BASIC ATX-80 pracuje s celými čísly v
+rozsahu -32768 až +32767. Proměnné mohou být typu:</font></p>
+
+<ul>
+    <li><font face="Arial">celočíselná proměnna s libovolně
+        dlouhým jménem (začíná písmenem, mohou následovat
+        písmena nebo číslice)</font></li>
+    <li><font face="Arial">jako parametr smyčky FOR lze použít
+        celočíselnou proměnnou jen s 1 písmenem</font></li>
+    <li><font face="Arial">textová proměnná je 1 písmeno
+        následované znakem $, text může mít libovolnou
+        délku</font></li>
+    <li><font face="Arial">pole je 1 písmeno, index pole může
+        být max. 255</font></li>
+</ul>
+
+<p><font face="Arial">Operace:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>+</strong> <strong>-</strong>
+        ... součet a rozdíl</font></li>
+    <li><font face="Arial"><strong>* /</strong> ... násobení a
+        dělení (pouze celočíselné)</font></li>
+    <li><font face="Arial"><strong>AND</strong> ... bitový a
+        logický součin</font></li>
+    <li><font face="Arial"><strong>OR</strong> ... bitový a
+        logický součet</font></li>
+    <li><font face="Arial"><strong>NOT</strong> ... bitová a
+        logická inverze</font></li>
+    <li><font face="Arial"><strong>**</strong> ... mocnina</font></li>
+    <li><font face="Arial"><strong>=</strong> ... porovnání čísel
+        a textů na shodu</font></li>
+    <li><font face="Arial"><strong>&lt;</strong> ... porovnání
+        čísel a textů na menší</font></li>
+    <li><font face="Arial"><strong>&gt;</strong> ... porovnání
+        čísel a textů na větší</font></li>
+</ul>
+
+<p><font face="Arial">Příkazy, mohou být jen na počátku řádku
+nebo za příkazem THEN, vyvolají se stiskem písmene:</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>LIST</strong> ... (A) výpis
+        programu od zadaného řádku, bez zadání čísla řádku
+        výpis od počátku</font></li>
+    <li><font face="Arial"><strong>RETURN</strong> ... (B)
+        návrat z procedury</font></li>
+    <li><font face="Arial"><strong>CLS</strong> ... (C)
+        vymazání obrazovky</font></li>
+    <li><font face="Arial"><strong>DIM</strong> ... (D) deklarace
+        pole. Pole může začínat indexem 0. Max. rozměr pole
+        je 255 (např. DIM A(255), indexy mohou být 0 až 255.</font></li>
+    <li><font face="Arial"><strong>SAVE</strong> ... (E) uložení
+        programu a proměnných do slotu. Následuje číslo
+        slotu 1 až 32 pro externí EEPROM. Bez zadání čísla
+        nebo zadáním čísla 0 se program s proměnnými uloží
+        do interní Flash paměti procesoru.</font></li>
+    <li><font face="Arial"><strong>FOR</strong> ... (F) cyklus, následuje
+        1-písmenná proměnná s počáteční hodnotou, za <strong>TO</strong>
+        následuje koncová hodnota.</font></li>
+    <li><font face="Arial"><strong>GO TO</strong> ... (G) skok na
+        zadané číslo řádku</font></li>
+    <li><font face="Arial"><strong>POKE</strong> ... (H) uložení
+        bajtu do RAM, následuje adresa a obsah bajtu. ATX-80
+        simuluje ukládání do RAM adres shodných se ZX-80.</font></li>
+    <li><font face="Arial"><strong>INPUT</strong> ... (I) uživatelský
+        vstup, následuje cílová číselná nebo textová proměnná</font></li>
+    <li><font face="Arial"><strong>RANDOMISE</strong> ... (J)
+        inicializace generátoru náhody zadaným číslem,
+        zadáním 0 nebo vynecháním parametru se inicializuje
+        podle čítače snímků</font></li>
+    <li><font face="Arial"><strong>LET</strong> ... (K) nastavení
+        obsahu proměnné</font></li>
+    <li><font face="Arial"><strong>FAST</strong> ... (L)
+        nastavení rychlého módu, zobrazí se pouze 1 horní řádek
+        a procesor se 4x zrychlí. Lze použít jen za běhu
+        programu.</font></li>
+    <li><font face="Arial"><strong>SLOW</strong> ... (M) nastavení
+        rychlého módu, zobrazí se celá obrazovka. Nastaveno
+        automaticky při ukončení programu.</font></li>
+    <li><font face="Arial"><strong>NEXT</strong> ... (N) pokračování
+        cyklu pro zadanou proměnnou</font></li>
+    <li><font face="Arial"><strong>PRINT</strong> ... (O) výpis
+        proměnných nebo textu. Znak '<strong>;</strong>'
+        zajistí pokračování bez mezery, znak '<strong>,</strong>'
+        je odsazení po 8-znakových tabulačních pozicích.</font></li>
+    <li><font face="Arial"><strong>MEMORY</strong> ... (P) vypíše
+        informace o paměti v bajtech: velikost programu,
+        velikost proměnných a volné místo v RAM.</font></li>
+    <li><font face="Arial"><strong>NEW</strong> ... (Q) vymaže
+        program a proměnné</font></li>
+    <li><font face="Arial"><strong>RUN</strong> ... (R) spustí
+        program od zadaného řádku, bez zadání čísla řádku
+        od začátku. Současně vymaže proměnné.</font></li>
+    <li><font face="Arial"><strong>STOP</strong> ... (S) zastaví
+        program. Lze pokračovat příkazem <strong>CONTINUE</strong>.</font></li>
+    <li><font face="Arial"><strong>CONTINUE</strong> ... (T)
+        pokračování programu od přerušení příkazem <strong>STOP</strong>.</font></li>
+    <li><font face="Arial"><strong>IF</strong> ... (U) podmínka.
+        Za <strong>THEN</strong> následuje příkaz provedený v
+        případě platnosti podmínky nebo výrazu (výraz je
+        platný je-li nenulový).</font></li>
+    <li><font face="Arial"><strong>GO SUB</strong> .. (V) skok do
+        procedury. Z procedury se navrací příkazem <strong>RETURN</strong>
+        na řádek následující za GO SUB.</font></li>
+    <li><font face="Arial"><strong>LOAD</strong> ... (W) načtení
+        programu a proměnných ze slotu. Následuje číslo
+        slotu 1 až 32 pro externí EEPROM. Bez zadání čísla
+        nebo zadáním čísla 0 se program s proměnnými načte
+        z interní Flash paměti procesoru.</font></li>
+    <li><font face="Arial"><strong>CLEAR</strong> ... (X) vymazání
+        proměnných</font></li>
+    <li><font face="Arial"><strong>REM</strong> ... (Y) komentář</font></li>
+</ul>
+
+<p><font face="Arial">Funkce a další povely (funkce je nutno
+napsat textově, nemají klávesovou zkratku):</font></p>
+
+<ul>
+    <li><font face="Arial"><strong>&quot;</strong> ... (Shift+Y)
+        označuje začátek a konec textu</font></li>
+    <li><font face="Arial"><strong>THEN</strong> ... (Shift+3)
+        součást podmínky IF, označuje příkaz provedený při
+        splnění podmínky</font></li>
+    <li><font face="Arial"><strong>TO</strong> ... (Shift+4) součást
+        cyklu FOR, označuje koncovou hodnotu proměnné</font></li>
+    <li><font face="Arial"><strong>;</strong> ... (Shift+Z) součást
+        příkazu PRINT, pokračování tisku od poslední pozice</font></li>
+    <li><font face="Arial"><strong>,</strong> ... (Shift+<strong>.</strong>)
+        součást příkazu PRINT, pokračování tisku od tabulační
+        pozice</font></li>
+    <li><font face="Arial"><strong>( )</strong> ... (Shift+I,
+        Shift+O) závorky</font></li>
+    <li><font face="Arial"><strong>PEEK</strong> ... Načtení
+        obsahu paměti z adresy uvedené v závorce. ATX-80
+        simuluje RAM adresy shodné se ZX-80, včetně adresy
+        fontu v ROM. Nejsou simulovány obsahy pointerů, ty je
+        nutné přepočítávat.</font></li>
+    <li><font face="Arial"><strong>CHR$</strong> ... konverze čísla
+        znaku na textový znak</font></li>
+    <li><font face="Arial"><strong>CODE</strong> ... konverze
+        textového znaku (první znak textu) na číselný kód</font></li>
+    <li><font face="Arial"><strong>RND</strong> ... generátor
+        náhody, vygeneruje číslo 1 až zadané maximální číslo</font></li>
+    <li><font face="Arial"><strong>TL$</strong> ... vrací text
+        bez prvního znaku</font></li>
+    <li><font face="Arial"><strong>USR</strong> ...
+        nepodporováno v ATX-80</font></li>
+    <li><font face="Arial"><strong>STR$</strong> ... konverze čísla
+        na text</font></li>
+    <li><font face="Arial"><strong>ABS</strong> ... absolutní
+        hodnota čísla</font></li>
+</ul>
+
+<h2><a name="samples"></a><font face="Arial">Ukázkové programy</font></h2>
+
+<p><font face="Arial">Ukázkové programy jsou uložené v
+externí EEPROM ve slotech 1 až 32. Obsah EEPROM lze kopírovat
+do jiné EEPROM, stáhnout do PC nebo nahrát z PC do EEPROM, jak
+bylo popsané v kapitole </font><a href="#eeprom"><font
+face="Arial">Programování EEPROM</font></a><font face="Arial">.</font></p>
+
+<p><font face="Arial">Obsahy programů naleznete v souboru
+Programs.txt ve zdrojových kódech, spolu s jejich podrobnějšími
+popisy.</font></p>
+
+<p><font face="Arial">1) Výpis znakové sady.</font></p>
+
+<p><a href="img/program_1.jpg"><font face="Arial"><img
+src="img/program_1m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">2) Desetinné dělení s vysokou přesností</font></p>
+
+<p><a href="img/program_2.jpg"><font face="Arial"><img
+src="img/program_2m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">3) Výpočet odmocniny</font></p>
+
+<p><a href="img/program_3.jpg"><font face="Arial"><img
+src="img/program_3m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">4) Hod kostkou</font></p>
+
+<p><a href="img/program_4.jpg"><font face="Arial"><img
+src="img/program_4m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">5) Měření reakčního času</font></p>
+
+<p><a href="img/program_5.jpg"><font face="Arial"><img
+src="img/program_5m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">6) Histogram generátoru náhodných čísel</font></p>
+
+<p><a href="img/program_6.jpg"><font face="Arial"><img
+src="img/program_6m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">7) Skákající žáby</font></p>
+
+<p><a href="img/program_7.jpg"><font face="Arial"><img
+src="img/program_7m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">8) Šifrování zpráv</font></p>
+
+<p><a href="img/program_8.jpg"><font face="Arial"><img
+src="img/program_8m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">9) Koňské dostihy</font></p>
+
+<p><a href="img/program_9.jpg"><font face="Arial"><img
+src="img/program_9m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">10) Přístání na Měsíci (spouštějte
+pomocí GO TO 100)</font></p>
+
+<p><a href="img/program_10.jpg"><font face="Arial"><img
+src="img/program_10m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">11) Generátor bludiště</font></p>
+
+<p><a href="img/program_11.jpg"><font face="Arial"><img
+src="img/program_11m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">12) Tic Tac Toe</font></p>
+
+<p><a href="img/program_12.jpg"><font face="Arial"><img
+src="img/program_12m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">13) Dr. ATX80 - psychiatr (spouštějte
+pomocí GO TO 120)</font></p>
+
+<p><a href="img/program_13.jpg"><font face="Arial"><img
+src="img/program_13m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">14) Hra NIM (tahání zápalek)</font></p>
+
+<p><a href="img/program_14.jpg"><font face="Arial"><img
+src="img/program_14m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">15) Blackjack</font></p>
+
+<p><a href="img/program_15.jpg"><font face="Arial"><img
+src="img/program_15m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">16) Bubble sort (třídění)</font></p>
+
+<p><a href="img/program_16.jpg"><font face="Arial"><img
+src="img/program_16m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">17) Automatické přečíslování programu
+(spouštějte pomocí GO TO 9987)</font></p>
+
+<p><a href="img/program_17.jpg"><font face="Arial"><img
+src="img/program_17m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">18) Kreslení obrázku (obnovení uloženého
+obrázku s GO TO 200)</font></p>
+
+<p><a href="img/program_18.jpg"><font face="Arial"><img
+src="img/program_18m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">19) Výpočet dne v týdnu</font></p>
+
+<p><a href="img/program_19.jpg"><font face="Arial"><img
+src="img/program_19m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">20) Čínský zbytek (výpočet myšleného
+čísla)</font></p>
+
+<p><a href="img/program_20.jpg"><font face="Arial"><img
+src="img/program_20m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">21) Simple Simon - přepisování
+zapamatovaných písmen</font></p>
+
+<p><a href="img/program_21.jpg"><font face="Arial"><img
+src="img/program_21m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">22) Hangman - hádání písmen ve slovu</font></p>
+
+<p><a href="img/program_22.jpg"><font face="Arial"><img
+src="img/program_22m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">23) Výuka sčítání a odečítání</font></p>
+
+<p><a href="img/program_23.jpg"><font face="Arial"><img
+src="img/program_23m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">24) Výuka hlavních měst</font></p>
+
+<p><a href="img/program_24.jpg"><font face="Arial"><img
+src="img/program_24m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">25) Life - celulární automat</font></p>
+
+<p><a href="img/program_25.jpg"><font face="Arial"><img
+src="img/program_25m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">26) Generátor prvočísel</font></p>
+
+<p><a href="img/program_26.jpg"><font face="Arial"><img
+src="img/program_26m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">27) Řešení soustavy rovnic</font></p>
+
+<p><a href="img/program_27.jpg"><font face="Arial"><img
+src="img/program_27m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">28) Výpočet odmocniny na 3 místa</font></p>
+
+<p><a href="img/program_28.jpg"><font face="Arial"><img
+src="img/program_28m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">29) Pontoon (karty, ukázka řešení
+grafiky)</font></p>
+
+<p><a href="img/program_29.jpg"><font face="Arial"><img
+src="img/program_29m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">30) Chomp (hra - ohraničení plochy)</font></p>
+
+<p><a href="img/program_30.jpg"><font face="Arial"><img
+src="img/program_30m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">31) Mastermind (hra - hádání číslic)</font></p>
+
+<p><a href="img/program_31.jpg"><font face="Arial"><img
+src="img/program_31m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<p><font face="Arial">32) Pinch (hra - obklíčení soupeře)</font></p>
+
+<p><a href="img/program_32.jpg"><font face="Arial"><img
+src="img/program_32m.jpg" width="240" height="160"
+style="border:3px solid black"></font></a></p>
+
+<h2><a name="download"></a><font face="Arial">Ke stažení</font></h2>
+
+<ul>
+    <li><font face="Arial">Schéma v Eagle Free </font><a
+        href="dwn/ATX80_diagram.zip"><font face="Arial">ATX80_diagram.zip</font></a></li>
+    <li><font face="Arial">Grafické podklady </font><a
+        href="dwn/ATX80_png.zip"><font face="Arial">ATX80_png.zip</font></a></li>
+    <li><font face="Arial">Zdrojové kódy (překlad s WinAVR pro
+        ATmega8, ATmega88, ATmega168 a ATmega328): </font><a
+        href="dwn/ATX80_src.zip"><font face="Arial">ATX80_src.zip</font></a></li>
+    <li><font face="Arial">Utility pro upload a download ukázkových
+        programů v EEPROM, překlad v MSVC 2005 </font><a
+        href="dwn/ATX80_util.zip"><font face="Arial">ATX80_util.zip</font></a></li>
+</ul>
+
+<h2><a name="partlist"></a><font face="Arial">Seznam součástek</font></h2>
+
+<ul>
+    <li><font face="Arial">432-027, 1 kus, procesor ATmega8A-PU,
+        85 Kč </font><a
+        href="https://www.gme.cz/atmega8a-pu-dip28-atmel"><font
+        face="Arial">https://www.gme.cz/atmega8a-pu-dip28-atmel</font></a><font
+        face="Arial"><br>
+        ... lze použít též ATmega88 (je i levnější),
+        ATmega168 nebo ATmega328 v pouzdru PDIP-28</font></li>
+    <li><font face="Arial">414-041, 1 kus, Paměť 32KB (256kbit)
+        EEPROM 24LC256-I/P, 27 Kč </font><a
+        href="https://www.gme.cz/24lc256-i-p-dip8-microchip"><font
+        face="Arial">https://www.gme.cz/24lc256-i-p-dip8-microchip</font></a></li>
+    <li><font face="Arial">131-090, 1 kus, krystal 24 MHz
+        HC49U/S, 5,40 Kč </font><a
+        href="https://www.gme.cz/krystal-hc49-us-qm-24-000mhz"><font
+        face="Arial">https://www.gme.cz/krystal-hc49-us-qm-24-000mhz</font></a></li>
+    <li><font face="Arial">120-060, 2 kusy, keramický
+        kondenzátor 100nF, 3 * 1,80 = 5,4 Kč </font><a
+        href="https://www.gme.cz/ck-100n-63v-y5v-rm5-08-80-20"><font
+        face="Arial">https://www.gme.cz/ck-100n-63v-y5v-rm5-08-80-20</font></a></li>
+    <li><font face="Arial">120-251, 1 kus, keramický
+        kondenzátor 10nF, 1,90 Kč </font><a
+        href="https://www.gme.cz/ck-10n-100v-z5v-rm5-08-80-20-hitano"><font
+        face="Arial">https://www.gme.cz/ck-10n-100v-z5v-rm5-08-80-20-hitano</font></a><font
+        face="Arial"><br>
+        ... na hodnotě příliš nezáleží</font></li>
+    <li><font face="Arial">120-125, 2 kusy, keramický
+        kondenzátor 22pF, 2 * 2,70 = 5,4 Kč </font><a
+        href="https://www.gme.cz/ck-22p-50v-npo-rm5-08-5"><font
+        face="Arial">https://www.gme.cz/ck-22p-50v-npo-rm5-08-5</font></a><font
+        face="Arial"><br>
+        ... lze použít i 27 pF</font></li>
+    <li><font face="Arial">114-453, 2 kusy, rezistor 100 ohmů, 2
+        * 1,90 = 3,8 Kč </font><a
+        href="https://www.gme.cz/rm-100r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-100r-0309-1w-1</font></a><font
+        face="Arial"><br>
+        ... lze nahradit i menší hodnotou (větší raději ne,
+        mohla by vypadávat synchronizace)</font></li>
+    <li><font face="Arial">114-455, 1 kus, rezistor 150 ohmů,
+        2,20 Kč </font><a
+        href="https://www.gme.cz/rm-150r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-150r-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-460, 1 kus, rezistor 470 ohmů,
+        2,20 Kč </font><a
+        href="https://www.gme.cz/rm-470r-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-470r-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-463, 1 kus, rezistor 1k, 2 Kč </font><a
+        href="https://www.gme.cz/rm-1k-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-1k-0309-1w-1</font></a></li>
+    <li><font face="Arial">114-474, 1 kus, rezistor 10k, 2,20 Kč
+        </font><a href="https://www.gme.cz/rm-10k-0309-1w-1"><font
+        face="Arial">https://www.gme.cz/rm-10k-0309-1w-1</font></a><font
+        face="Arial"><br>
+        ... na hodnotě příliš nezáleží</font></li>
+    <li><font face="Arial">823-011, 1 kus, DIL patice 8pin SOKL8,
+        1,90 Kč </font><a href="https://www.gme.cz/sokl-8"><font
+        face="Arial">https://www.gme.cz/sokl-8</font></a></li>
+    <li><font face="Arial">823-026, 1 kus, DIL patice 28pin
+        úzká SOKL 28U, 4,30 Kč </font><a
+        href="https://www.gme.cz/sokl-28u"><font face="Arial">https://www.gme.cz/sokl-28u</font></a></li>
+    <li><font face="Arial">630-749, 40 kusů, mikrospínač do
+        DPS TC-0107-T, 40 * 2,80 = 112 Kč (výhodnější cena
+        pro 50 kusů 50 * 1,84 = 92 Kč) </font><a
+        href="https://www.gme.cz/mikrospinac-do-dps-tc-0107-t"><font
+        face="Arial">https://www.gme.cz/mikrospinac-do-dps-tc-0107-t</font></a></li>
+    <li><font face="Arial">832-120, 1 kus, USB 2.0 B zásuvka do
+        DPS 90° DS1099-WN0, 13 Kč </font><a
+        href="https://www.gme.cz/konektor-usb1x90b-pcb"><font
+        face="Arial">https://www.gme.cz/konektor-usb1x90b-pcb</font></a></li>
+    <li><font face="Arial">801-003, 1 kus, D-Sub 15pin zásuvka
+        do DPS 90° CAN 15 3Z 90, 21 Kč </font><a
+        href="https://www.gme.cz/konektor-can-15-3z-90"><font
+        face="Arial">https://www.gme.cz/konektor-can-15-3z-90</font></a></li>
+    <li><font face="Arial">808-166, 1 kus, Cinch RCA zásuvka do
+        DPS 90° RS-101F, 5,30 Kč </font><a
+        href="https://www.gme.cz/konektor-cinch-zasuvka-kovova-do-dps-90-zluta"><font
+        face="Arial">https://www.gme.cz/konektor-cinch-zasuvka-kovova-do-dps-90-zluta</font></a></li>
+    <li><font face="Arial">821-256, 1 kus, konektor vidlice 2x3
+        pin do DPS 90° MLW06A, 5,10 Kč </font><a
+        href="https://www.gme.cz/konektor-kon-069-00"><font
+        face="Arial">https://www.gme.cz/konektor-kon-069-00</font></a></li>
+    <li><font face="Arial">661-064, 1 kus, fotocuprextit
+        75x100x1,5mm jednovrstvý, 44 Kč </font><a
+        href="https://www.gme.cz/fotocuprextit-fr4-75x100x1-5-jednovrstvy"><font
+        face="Arial">https://www.gme.cz/fotocuprextit-fr4-75x100x1-5-jednovrstvy</font></a></li>
+</ul>
+
+<p><font face="Arial">Cena celkem (bez plošného spoje): 285 Kč</font></p>
+
+<p align="right"><font face="Arial">Miroslav Němeček<br>
+</font><a href="mailto:Panda38@seznam.cz"><font face="Arial">Panda38@seznam.cz</font></a></p>
+<div align="center"><center>
+
+<table border="0" width="100%">
+    <tr>
+        <td width="33%"><p align="left"><a href="../index.html"><font
+        face="Arial">&lt;&lt; Zpět</font></a></p>
+        </td>
+        <td width="33%">&nbsp;</td>
+        <td width="34%">&nbsp;</td>
+    </tr>
+</table>
+</center></div>
+</body>
+</html>
