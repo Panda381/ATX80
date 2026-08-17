@@ -13,6 +13,16 @@ project home web page: http://www.breatharian.eu/hw/atx80/index_en.html
 ATX80 on GitHub: https://github.com/Panda381/ATX80
 
 
+License
+-------
+All of my software creations are distributed under the Unlicense https://spdx.org/licenses/Unlicense.html,
+and my hardware creations under the CC0 license https://creativecommons.org/publicdomain/zero/1.0/legalcode.en.
+You are free to use, modify, and distribute them for any purpose without having to credit me as the author.
+The exception is content derived from third-party sources. These third-party components are not covered by
+my Unlicense or CC0 licenses, but rather by the original license terms of their authors. These components
+are marked in the code, and when using them, you must comply with the terms of the original licenses.
+
+
 Description
 -----------
 The ATX-80 is a microcomputer derived from the ZX-80, with an ATmega8 processor. It does not emulate code, but replaces the original computer with custom code with similar functionality in AVR assembly. It allows output of the video to a VGA monitor or to a PAL/NTSC television. BASIC programs can be stored in internal EEPROM, internal Flash or external EEPROM memory (32 memory slots) and also transferred between PC and memory. The advantages are easy construction and small size. It can be used as a small inexpensive computer for teaching basic BASIC programming. Includes 32 sample programs.
